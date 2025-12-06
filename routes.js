@@ -8,12 +8,13 @@ router.post("/register", registerUser);
 
 // Login
 router.post("/login", loginUser);
+router.get("/products", getAllProducts);
 
 
 router.use(authMiddleware);
 
 // Products
-router.get("/products", getAllProducts);
+
 router.post("/products", saveProduct);
 
 // Shakes
