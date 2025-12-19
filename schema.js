@@ -1,14 +1,20 @@
 const mongoose = require("mongoose");
 
-// Product Schema
-const productSchema = new mongoose.Schema({
+// ==========================
+// COMMON SCHEMAS
+// ==========================
+
+// WITHOUT isVeg
+const basicFoodSchema = new mongoose.Schema({
   id: Number,
   name: String,
-  price: Number
+  price: Number,
+  description: String,
+  image: String
 });
 
-// Shakes Schema
-const shakesSchema = new mongoose.Schema({
+// WITH isVeg
+const vegFoodSchema = new mongoose.Schema({
   id: Number,
   name: String,
   price: Number,
@@ -17,8 +23,37 @@ const shakesSchema = new mongoose.Schema({
   isVeg: { type: Boolean, default: true }
 });
 
-// Order Schema (ALL FIELDS OPTIONAL)
- const orderSchema = new mongoose.Schema({
+// ==========================
+// PRODUCT
+// ==========================
+const productSchema = new mongoose.Schema({
+  id: Number,
+  name: String,
+  price: Number
+});
+
+// ==========================
+// WITHOUT isVeg
+// ==========================
+const shakesSchema = basicFoodSchema;
+const hotBeveragesSchema = basicFoodSchema;
+const mocktailsSchema = basicFoodSchema;
+const dessertsSchema = basicFoodSchema;
+
+// ==========================
+// WITH isVeg
+// ==========================
+const breakfastSchema = vegFoodSchema;
+const soupsSchema = vegFoodSchema;
+const appetizersSchema = vegFoodSchema;
+const snacksSchema = vegFoodSchema;
+const pizzasSchema = vegFoodSchema;
+const pastasSchema = vegFoodSchema;
+
+// ==========================
+// ORDER
+// ==========================
+const orderSchema = new mongoose.Schema({
   orderId: Number,
   customerName: String,
   items: [
@@ -37,19 +72,35 @@ const shakesSchema = new mongoose.Schema({
   couponPercentage: { type: Number, default: 0 }
 });
 
-
+// ==========================
+// USER
+// ==========================
 const userSchema = new mongoose.Schema({
   name: String,
   email: String,
   phone: Number,
   password: String,
   DOB: { type: Date },
-  gender:String,
-  address:String,
+  gender: String,
+  address: String,
   createdAt: { type: Date, default: Date.now }
 });
 
+module.exports = {
+  productSchema,
 
+  shakesSchema,
+  hotBeveragesSchema,
+  mocktailsSchema,
+  dessertsSchema,
 
+  breakfastSchema,
+  soupsSchema,
+  appetizersSchema,
+  snacksSchema,
+  pizzasSchema,
+  pastasSchema,
 
-module.exports = { productSchema, shakesSchema, orderSchema,userSchema };
+  orderSchema,
+  userSchema
+};
