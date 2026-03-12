@@ -95,19 +95,32 @@ const fetchAllOrders = () => fetchAll(orderModel);
 // ==========================
 // AUTH
 // ==========================
+
+// Registration user creation
 const createUser = async (data) => {
-  const existing = await userModel.findOne({ email: data.email });
-  if (existing) return { success: false, message: "Email already exists" };
 
+  // convert email to lowercase for consistency and to avoid duplicates
+  const email = data.email.toLowerCase();
+  const existing = await userModel.findOne({ email });
+  if (existing) {
+    return { success: false, message: "Email already exists" };
+  }
   const hashed = await bcrypt.hash(data.password, 10);
-
-  const user = new userModel({ ...data, password: hashed });
+  const user = new userModel({
+    ...data,
+    email,
+    password: hashed
+  });
   const saved = await user.save();
-
-  return { success: true, message: "Registered successfully", user: saved };
+  return {
+    success: true,
+    message: "Registered successfully",
+    user: saved
+  };
 };
 
 const loginUserService = async ({ email, password }) => {
+  email = email.toLowerCase();
   const user = await userModel.findOne({ email });
   if (!user) throw new Error("User not found");
 
@@ -121,6 +134,24 @@ const loginUserService = async ({ email, password }) => {
   );
 
   return { status: true, message: "Login successful", user, token };
+};
+
+
+// ==========================  payment integration ==========================
+const razorpay = require("./config/razorpay");
+
+const createRazorpayOrder = async (amount) => {
+
+  const options = {
+    amount: amount * 100, // Razorpay expects paise
+    currency: "INR",
+    receipt: "receipt_" + Date.now()
+  };
+  console.log("Creating Razorpay order with options:", options);
+
+  const order = await razorpay.orders.create(options);
+  console.log( order);
+  return order;
 };
 
 module.exports = {
@@ -152,5 +183,7 @@ module.exports = {
   createOrder,
   fetchAllOrders,
   createUser,
-  loginUserService
+  loginUserService,
+
+  createRazorpayOrder
 };

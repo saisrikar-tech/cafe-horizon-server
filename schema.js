@@ -56,12 +56,14 @@ const pastasSchema = vegFoodSchema;
 const orderSchema = new mongoose.Schema({
   orderId: Number,
   customerName: String,
+  email: String,
   items: [
     {
       id: Number,
       name: String,
       price: Number,
-      quantity: Number
+      quantity: Number,
+      
     }
   ],
   totalAmount: Number,
@@ -77,7 +79,13 @@ const orderSchema = new mongoose.Schema({
 // ==========================
 const userSchema = new mongoose.Schema({
   name: String,
-  email: String,
+  email: {
+  type: String,
+  required: true,
+  unique: true,
+  lowercase: true,
+  trim: true
+},
   phone: Number,
   password: String,
   DOB: { type: Date },

@@ -37,7 +37,8 @@ const {
   getOrders,
 
   registerUser,
-  loginUser
+  loginUser,
+  createPaymentOrder
 } = require("./ProductsController");
 
 const authMiddleware = require("./authMiddleware");
@@ -101,5 +102,9 @@ router.post("/pastas", savePastas);
 // Orders
 router.post("/orders", saveOrder);
 router.get("/orders", getOrders);
+
+
+// ==========================  payment integration ==========================
+router.post("/create-payment", createPaymentOrder);
 
 module.exports = router;

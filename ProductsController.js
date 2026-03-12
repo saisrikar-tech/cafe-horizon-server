@@ -36,7 +36,8 @@ const {
   fetchAllOrders,
 
   createUser,
-  loginUserService
+  loginUserService,
+  createRazorpayOrder
 } = require("./ProductsService");
 
 // PRODUCTS
@@ -286,6 +287,28 @@ const loginUser = async (req, res) => {
   }
 };
 
+// ==========================  payment integration ==========================
+const createPaymentOrder = async (req, res) => {
+
+  try {
+
+    const { amount } = req.body;
+    const order = await createRazorpayOrder(amount);
+
+    res.status(200).json(order);
+
+  } catch (error) {
+    console.error("Payment creation error:", error);
+    res.status(500).json({
+      message: "Payment creation failed",
+      error: error.message
+    });
+
+  }
+
+};
+
+
 module.exports = {
   getAllProducts,
   saveProduct,
@@ -315,5 +338,7 @@ module.exports = {
   saveOrder,
   getOrders,
   registerUser,
-  loginUser
+  loginUser,
+
+  createPaymentOrder
 };
