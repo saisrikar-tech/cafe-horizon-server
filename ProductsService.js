@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 const {
   productSchema,
@@ -154,6 +155,38 @@ const createRazorpayOrder = async (amount) => {
   return order;
 };
 
+
+
+
+// ============================Verify Razorpay Payment===================
+const verifyRazorpayPayment = async (paymentData) => {
+
+  const {
+    razorpay_order_id,
+    razorpay_payment_id,
+    razorpay_signature
+  } = paymentData;
+
+  const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+  const expectedSignature = crypto
+    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+    .update(body)
+    .digest("hex");
+
+  if (expectedSignature === razorpay_signature) {
+
+    return { success: true };
+
+  } else {
+
+    return { success: false };
+
+  }
+
+};
+
+
 module.exports = {
   fetchAllProducts,
   addProduct,
@@ -185,5 +218,6 @@ module.exports = {
   createUser,
   loginUserService,
 
-  createRazorpayOrder
+  createRazorpayOrder,
+  verifyRazorpayPayment
 };

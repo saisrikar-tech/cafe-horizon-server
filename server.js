@@ -18,6 +18,7 @@ mongoose
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on http://localhost:${process.env.PORT}`);
+  console.log("SECRET:", process.env.RAZORPAY_KEY_SECRET);
 });
 
 module.exports = app;

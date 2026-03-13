@@ -38,7 +38,8 @@ const {
 
   registerUser,
   loginUser,
-  createPaymentOrder
+  createPaymentOrder,
+  verifyPaymentController
 } = require("./ProductsController");
 
 const authMiddleware = require("./authMiddleware");
@@ -106,5 +107,7 @@ router.get("/orders", getOrders);
 
 // ==========================  payment integration ==========================
 router.post("/create-payment", createPaymentOrder);
+
+router.post("/verify-payment", verifyPaymentController);
 
 module.exports = router;

@@ -37,7 +37,8 @@ const {
 
   createUser,
   loginUserService,
-  createRazorpayOrder
+  createRazorpayOrder,
+  verifyRazorpayPayment
 } = require("./ProductsService");
 
 // PRODUCTS
@@ -309,6 +310,42 @@ const createPaymentOrder = async (req, res) => {
 };
 
 
+// ======================Verify Razorpay payment======================
+const verifyPaymentController = async (req, res) => {
+
+  try {
+
+    const verificationResult = await verifyRazorpayPayment(req.body);
+
+    if (verificationResult.success) {
+
+      return res.status(200).json({
+        success: true,
+        message: "Payment verified successfully"
+      });
+
+    } else {
+
+      return res.status(400).json({
+        success: false,
+        message: "Payment verification failed"
+      });
+
+    }
+
+  } catch (error) {
+
+    console.error("Payment verification error:", error);
+
+    res.status(500).json({
+      message: "Verification error",
+      error: error.message
+    });
+
+  }
+
+};
+
 module.exports = {
   getAllProducts,
   saveProduct,
@@ -340,5 +377,6 @@ module.exports = {
   registerUser,
   loginUser,
 
-  createPaymentOrder
+  createPaymentOrder,
+  verifyPaymentController
 };
