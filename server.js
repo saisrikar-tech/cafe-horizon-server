@@ -11,9 +11,12 @@ app.use(express.json());
 // FIX 1: Allow requests from your Vercel frontend
 app.use(cors({
   origin: [
-    "http://localhost:5173",                        // local dev
-    "https://cafe-horizon-frontend.vercel.app",     // ← replace with your actual Vercel URL
+    "http://localhost:5173",                       // local dev
+    "http://localhost:3000",                       // local dev alt
+    "https://cafe-horizon-frontend.vercel.app",    // ← your Vercel URL
   ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 }));
 
