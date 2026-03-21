@@ -4,47 +4,50 @@ const cors = require("cors");
 require("dotenv").config();
 
 const router = require("./routes");
+const adminRouter = require("./adminRoutes"); // ← ADD THIS
 
 const app = express();
 app.use(express.json());
 
-// FIX 1: Allow requests from your Vercel frontend
 app.use(cors({
-  origin: [
-    "http://localhost:5173",                       // local dev
-    "http://localhost:3000",                       // local dev alt
-    "https://cafe-horizon-frontend.vercel.app",    // ← your Vercel URL
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  origin: function (origin, callback) {
+    const allowed = [
+      "https://cafe-horizon-frontend.vercel.app",
+      "https://cafe-horizon-admin.vercel.app",
+    ];
+    if (!origin || origin.startsWith("http://localhost") || allowed.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 }));
 
 app.use("/api/v1/products", router);
+app.use("/api/v1/admin", adminRouter); // ← ADD THIS
 
-// FIX 2: Health check route — Render needs this
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-// FIX 3: Fallback PORT in case env variable is missing
 const PORT = process.env.PORT || 5000;
 
 mongoose
   .connect(process.env.MONGODB_URL)
   .then(() => {
     console.log("MongoDB Connected");
-
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
   })
   .catch((err) => {
     console.log("MongoDB Error:", err);
-    process.exit(1); // exit if DB connection fails
+    process.exit(1);
   });
 
-// FIX 4: Keep alive ping — prevents Render free tier from sleeping
 setInterval(() => {
   const url = process.env.RENDER_URL;
   if (url) {
@@ -52,6 +55,6 @@ setInterval(() => {
       .then(() => console.log("Keep alive ping sent"))
       .catch(() => console.log("Ping failed"));
   }
-}, 10 * 60 * 1000); // every 10 minutes
+}, 10 * 60 * 1000);
 
 module.exports = app;

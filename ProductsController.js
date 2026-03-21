@@ -38,7 +38,8 @@ const {
   createUser,
   loginUserService,
   createRazorpayOrder,
-  verifyRazorpayPayment
+  verifyRazorpayPayment,
+  fetchOrdersByEmail
 } = require("./ProductsService");
 
 // PRODUCTS
@@ -260,15 +261,17 @@ const saveOrder = async (req, res) => {
   }
 };
 
+
+// get orders by email 
 const getOrders = async (req, res) => {
   try {
-    const savedOrders = await fetchAllOrders();
-    res.status(200).json(savedOrders);
+    const email = req.user.email; // comes from JWT token via authMiddleware
+    const orders = await fetchOrdersByEmail(email);
+    res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 // AUTH
 const registerUser = async (req, res) => {
   try {

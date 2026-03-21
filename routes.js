@@ -56,10 +56,6 @@ router.post("/login", loginUser);
 router.get("/products", getAllProducts);
 router.post("/products", saveProduct);
 
-// Protect below routes
-// router.use(authMiddleware);
-
-
 // Shakes
 router.get("/shakes", getShakes);
 router.post("/shakes", saveShakes);
@@ -99,6 +95,9 @@ router.post("/pizzas", savePizzas);
 // Pastas
 router.get("/pastas", getPastas);
 router.post("/pastas", savePastas);
+
+// Protect below routes
+router.use(authMiddleware);
 
 // Orders
 router.post("/orders", saveOrder);

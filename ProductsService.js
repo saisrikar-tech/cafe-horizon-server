@@ -91,7 +91,10 @@ const addPastas = (data) => insertMany(pastasModel, data);
 // ORDERS
 // ==========================
 const createOrder = (data) => new orderModel(data).save();
-const fetchAllOrders = () => fetchAll(orderModel);
+
+// Fetch orders by email, sorted by most recent first
+const fetchOrdersByEmail = (email) => 
+  orderModel.find({ email: email.toLowerCase() }).sort({ orderDate: -1 });
 
 // ==========================
 // AUTH
@@ -214,7 +217,7 @@ module.exports = {
   addPastas,
 
   createOrder,
-  fetchAllOrders,
+  fetchOrdersByEmail,
   createUser,
   loginUserService,
 

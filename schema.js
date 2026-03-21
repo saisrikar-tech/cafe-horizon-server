@@ -63,15 +63,17 @@ const orderSchema = new mongoose.Schema({
       name: String,
       price: Number,
       quantity: Number,
-      
+      image: String,  // ← add this so admin can see item images
     }
   ],
   totalAmount: Number,
-  paymentType: String,
+  paymentType: { type: String, default: "COD" },
   status: { type: String, default: "Pending" },
   orderDate: { type: Date, default: Date.now },
-  discountPercentage: { type: Number, default: 0 },
-  couponPercentage: { type: Number, default: 0 }
+  couponPercentage: { type: Number, default: 0 },
+  gstTaxAmount: { type: Number, default: 0 },           
+  couponDiscountAmount: { type: Number, default: 0 },   
+  amountToBePaid: { type: Number, default: 0 },
 });
 
 // ==========================
@@ -94,6 +96,19 @@ const userSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+const adminSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+  },
+  password: { type: String, required: true },
+  role: { type: String, default: "admin" },
+  createdAt: { type: Date, default: Date.now },
+});
 module.exports = {
   productSchema,
 
@@ -110,5 +125,6 @@ module.exports = {
   pastasSchema,
 
   orderSchema,
-  userSchema
+  userSchema,
+  adminSchema
 };
